@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class FIFOCache extends Cache {
-  private LinkedList<Integer> cache;
 
   public FIFOCache(int m, int n) {
     super(m, n);

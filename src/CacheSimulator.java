@@ -18,14 +18,11 @@ public class CacheSimulator {
 
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
 
+    cache = new FIFOCache(m, n);
+
     for(int i = 0; i < n; i++) {
       scheduleNextArrival(i);
     }
-
-    cache = new FIFOCache(m, n);
-
-    // simulate arrivals until time T
-
 
   }
 
@@ -36,7 +33,6 @@ public class CacheSimulator {
   }
 
 
-
   public int getHitRatio() {
     return hitCount / numAccesses;
   }
@@ -45,8 +41,8 @@ public class CacheSimulator {
     return (numAccesses - hitCount) / time;
   }
 
-  private void run() {
-    for(int i = 0; i < totalSimTime; i++) {
+  public void run() {
+    while(arrivals.peek().time <= totalSimTime) {
       Arrival a = arrivals.remove();
       time = a.time;
       hitCount += cache.addToCache(a.value);
