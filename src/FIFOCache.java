@@ -3,18 +3,16 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class FIFO {
-  private int m;  // max capacity
-  private int n;  // total options
+public class FIFOCache extends Cache {
   private LinkedList<Integer> cache;
 
-  public FIFO(int m, int n) {
-    this.m = m;
-    this.n = n;
+  public FIFOCache(int m, int n) {
+    super(m, n);
     cache = IntStream.rangeClosed(1, m).boxed().collect(Collectors.toCollection(LinkedList::new));
   }
 
   // Returns true if cache hit else false
+  @Override
   public int addToCache(int i) {
     if(cache.contains(i)) return 1;
     cache.removeFirst();

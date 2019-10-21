@@ -5,14 +5,16 @@ import java.util.Queue;
 public class CacheSimulator {
 
   private Queue<Arrival> arrivals;
+
+  private double totalSimTime;
   private double time;
-  private double hitCount;
+  private int hitCount;
+  private int numAccesses;
+  private double warmUpTime;
+  Cache cache;
 
-  public void main(String[] args) {
 
-    int m = Integer.parseInt(args[0]); // Size of cache
-    int n = Integer.parseInt(args[1]); // Size of sample set
-    int T = Integer.parseInt(args[2]); // Total Simulation Time
+  public CacheSimulator(int totalSimTime, int warmUpTime, int m, int n) {
 
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
 
@@ -20,23 +22,36 @@ public class CacheSimulator {
       scheduleNextArrival(i);
     }
 
-    FIFO cache = new FIFO(m, n);
+    cache = new FIFOCache(m, n);
 
-    for(int i = 0; i < T; i++) {
-      Arrival a = arrivals.remove();
-      time = a.time;
-      hitCount += cache.addToCache(a.value);
-      scheduleNextArrival(a.value);
-    }
+    // simulate arrivals until time T
 
-    double pHit = hitCount / T;
-    System.out.println("Miss rate =" + (1 - pHit));
+
   }
 
   private void scheduleNextArrival(int k) {
     double u = Math.random();
     double t = -Math.log(u) * k; // Calculates next arrival time with Lk = 1 / k
     arrivals.add(new Arrival(this.time + t, k));
+  }
+
+
+
+  public int getHitRatio() {
+    return hitCount / numAccesses;
+  }
+
+  public double getMissRate() {
+    return (numAccesses - hitCount) / time;
+  }
+
+  private void run() {
+    for(int i = 0; i < totalSimTime; i++) {
+      Arrival a = arrivals.remove();
+      time = a.time;
+      hitCount += cache.addToCache(a.value);
+      scheduleNextArrival(a.value);
+    }
   }
 
   private class Arrival {
@@ -48,7 +63,6 @@ public class CacheSimulator {
       this.value = value;
     }
   }
-
 }
 
 
