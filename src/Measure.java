@@ -1,4 +1,5 @@
 public class Measure {
+
   private double measureSum = 0.0;
   private double measureSumSq = 0.0;
   private int n = 0;

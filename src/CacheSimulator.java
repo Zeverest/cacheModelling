@@ -21,7 +21,7 @@ public class CacheSimulator {
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
     cache = new FIFOCache(m, n);
 
-    for(int i = 0; i < n; i++) {
+    for(int i = 1; i <= n; i++) {
       scheduleNextArrival(i);
     }
 
@@ -30,9 +30,13 @@ public class CacheSimulator {
     }
   }
 
+  /**
+   *  We sample Uniform(0, 1), and then transform this value so that we have
+   *  sampled Exp(1/k).
+   */
   private void scheduleNextArrival(int k) {
     double u = Math.random();
-    double t = -Math.log(u) * k; // Calculates next arrival time with Lk = 1 / k
+    double t = - Math.log(u) * k;
     arrivals.add(new Arrival(this.time + t, k));
   }
 
@@ -45,14 +49,14 @@ public class CacheSimulator {
   }
 
   public void simulateArrival() {
-    Arrival a = arrivals.remove();
+    Arrival a = arrivals.poll();
     time = a.time;
     scheduleNextArrival(a.value);
     hit = cache.addToCache(a.value);
   }
 
   public void run() {
-    for (int i =0; i < runLength; i++) {
+    for (int i = 0; i < runLength; i++) {
       simulateArrival();
       hitCount += hit;
     }

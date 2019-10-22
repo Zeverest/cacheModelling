@@ -31,7 +31,6 @@ public class RunCacheSimulator {
     }
 
     public void displayResults(PrintStream out) {
-
         double hitRatioSampleMean = hitRatioMeasure.sampleMean();
         double missRateSampleMean = missRateMeasure.sampleMean();
         if (numObservations == 1) {
