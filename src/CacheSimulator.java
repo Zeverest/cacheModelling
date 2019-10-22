@@ -36,7 +36,6 @@ public class CacheSimulator {
     arrivals.add(new Arrival(this.time + t, k));
   }
 
-
   public double getHitRatio() {
     return hitCount / runLength;
   }
