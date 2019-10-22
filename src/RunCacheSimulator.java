@@ -40,10 +40,10 @@ public class RunCacheSimulator {
             out.printf("%.4f\n", missRateSampleMean);
         } else {
             double hitRatioHalfWidth = hitRatioMeasure.ciHalfWidth(95);
-            double missRateHalfWidth = hitRatioMeasure.ciHalfWidth(95);
-            out.printf("%.4f, 95%% CI = (%.4f, %.4f)\n", hitRatioSampleMean,
+            double missRateHalfWidth = missRateMeasure.ciHalfWidth(95);
+            out.printf("hitRatio: %.4f, 95%% CI = (%.4f, %.4f)\n", hitRatioSampleMean,
                     hitRatioSampleMean - hitRatioHalfWidth, hitRatioSampleMean + hitRatioHalfWidth);
-            out.printf("%.4f, 95%% CI = (%.4f, %.4f)\n", missRateSampleMean,
+            out.printf("MissRate: %.4f, 95%% CI = (%.4f, %.4f)\n", missRateSampleMean,
                     missRateSampleMean - missRateHalfWidth, missRateSampleMean + missRateHalfWidth);
         }
     }

@@ -6,15 +6,17 @@ public class CacheSimulator {
 
   private Queue<Arrival> arrivals;
 
-  private double totalSimTime;
+  private double runLength;
   private double time;
   private int hitCount;
-  private int numAccesses;
-  private double warmUpTime;
+  private double warmUp;
   Cache cache;
 
 
-  public CacheSimulator(int totalSimTime, int warmUpTime, int m, int n) {
+  public CacheSimulator(int runLength, int warmUp, int m, int n) {
+
+    this.runLength = runLength;
+    this.warmUp = warmUp;
 
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
 
@@ -24,6 +26,9 @@ public class CacheSimulator {
       scheduleNextArrival(i);
     }
 
+    for(int i = 0; i < warmUp; i++) {
+      simulateArrival();
+    }
   }
 
   private void scheduleNextArrival(int k) {
@@ -33,20 +38,24 @@ public class CacheSimulator {
   }
 
 
-  public int getHitRatio() {
-    return hitCount / numAccesses;
+  public double getHitRatio() {
+    return hitCount / runLength;
   }
 
   public double getMissRate() {
-    return (numAccesses - hitCount) / time;
+    return (runLength - hitCount) / (time - warmUp);
+  }
+
+  public int simulateArrival() {
+    Arrival a = arrivals.remove();
+    time = a.time;
+    scheduleNextArrival(a.value);
+    return cache.addToCache(a.value);
   }
 
   public void run() {
-    while(arrivals.peek().time <= totalSimTime) {
-      Arrival a = arrivals.remove();
-      time = a.time;
-      hitCount += cache.addToCache(a.value);
-      scheduleNextArrival(a.value);
+    for (int i =0; i < runLength; i++) {
+      hitCount += simulateArrival();
     }
   }
 
