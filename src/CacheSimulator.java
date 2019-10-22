@@ -5,14 +5,13 @@ import java.util.Queue;
 public class CacheSimulator {
 
   private Queue<Arrival> arrivals;
+  Cache cache;
 
   private double runLength;
   private double time;
   private int hitCount;
   private double warmUp;
   private int hit;
-  Cache cache;
-
 
   public CacheSimulator(int runLength, int warmUp, int m, int n) {
 
@@ -20,7 +19,6 @@ public class CacheSimulator {
     this.warmUp = warmUp;
 
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
-
     cache = new FIFOCache(m, n);
 
     for(int i = 0; i < n; i++) {

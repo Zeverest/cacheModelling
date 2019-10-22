@@ -1,29 +1,28 @@
 import java.io.PrintStream;
 
-//
-// Generates <numObservations> observations from a cache simulation and
-// computes a point estimate and confidence interval for each board location
-// probability in the steady state (equilibrium). A warm-up allows the model
-// to reach equilibrium before measurements are made.
-//
-// Supports independent replications (runReplicatedSims) and a single run with multiple
-// batches (runOneSim).
-//
-// The system is ergodic, so the two approaches yield the same expected values
-// for the steady-state probabilities.
-//
+/**
+ * Generates <numObservations> observations from a cache simulation and
+ * computes a point estimate and confidence interval for each hit ratio and
+ * miss rate in the steady state (equilibrium). A warm-up allows the model
+ * to reach equilibrium before measurements are made.
+
+ * Only supports independent replications (runReplicatedSims).
+**/
 
 public class RunCacheSimulator {
+
     private Measure hitRatioMeasure = new Measure();
     private Measure missRateMeasure = new Measure();
+
     private int runLength, numObservations, warmUp, m, n;
 
-    public RunCacheSimulator(int runLength, int numObservations, int warmUp, int m, int n) {
-        this.runLength = runLength;
-        this.numObservations = numObservations;
-        this.warmUp = warmUp;
+    public RunCacheSimulator(int m, int n, int runLength, int warmUp,
+            int numObservations) {
         this.m = m;
         this.n = n;
+        this.runLength = runLength;
+        this.warmUp = warmUp;
+        this.numObservations = numObservations;
     }
 
     private void addToMeasures(double hitRatio, double missRate) {
@@ -48,20 +47,18 @@ public class RunCacheSimulator {
         }
     }
 
-    // Each run sets up a fresh board.
+    // Each run sets up a fresh cache.
     // There is a separate warm-up for each.
     public void runReplicatedSims() {
         for (int i = 0; i < numObservations; i++) {
             var cacheSimulator = new CacheSimulator(runLength, warmUp, m, n);
             cacheSimulator.run();
-
             addToMeasures(cacheSimulator.getHitRatio(), cacheSimulator.getMissRate());
-
         }
     }
 
-
-    // Usage: java ... RunCacheSimulator <runLength> <numObservations> <warmup>
+    // Usage: java ... RunCacheSimulator <m> <n> <runLength>
+    // <warmup> <numObservations>
     public static void main(String[] args) {
         var sim = new RunCacheSimulator(Integer.parseInt(args[0]),
                 Integer.parseInt(args[1]),
