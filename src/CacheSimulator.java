@@ -10,6 +10,7 @@ public class CacheSimulator {
   private double time;
   private int hitCount;
   private double warmUp;
+  private int hit;
   Cache cache;
 
 
@@ -46,16 +47,17 @@ public class CacheSimulator {
     return (runLength - hitCount) / (time - warmUp);
   }
 
-  public int simulateArrival() {
+  public void simulateArrival() {
     Arrival a = arrivals.remove();
     time = a.time;
     scheduleNextArrival(a.value);
-    return cache.addToCache(a.value);
+    hit = cache.addToCache(a.value);
   }
 
   public void run() {
     for (int i =0; i < runLength; i++) {
-      hitCount += simulateArrival();
+      simulateArrival();
+      hitCount += hit;
     }
   }
 
