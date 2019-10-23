@@ -5,9 +5,10 @@ import java.util.stream.IntStream;
 
 public class FIFOCache extends Cache {
 
-  public FIFOCache(int m, int n) {
-    super(m, n);
-    cache = IntStream.rangeClosed(1, m).boxed().collect(Collectors.toCollection(LinkedList::new));
+  public FIFOCache(int m) {
+    super(m);
+    cache = IntStream
+        .rangeClosed(1, m).boxed().collect(Collectors.toCollection(LinkedList::new));
   }
 
   // Returns true if cache hit else false

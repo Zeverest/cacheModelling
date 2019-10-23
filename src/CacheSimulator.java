@@ -13,13 +13,21 @@ public class CacheSimulator {
   private double warmUp;
   private int hit;
 
-  public CacheSimulator(int runLength, int warmUp, int m, int n) {
+  public CacheSimulator(String cacheType, int runLength, int warmUp, int m,
+      int n) {
 
     this.runLength = runLength;
     this.warmUp = warmUp;
-
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
-    cache = new FIFOCache(m, n);
+
+    if (cacheType.equals("FIFO")) {
+      cache = new FIFOCache(m);
+    } else if (cacheType.equals("RAND")) {
+      cache = new RANDCache(m);
+    } else {
+      System.out.println("Unknown cache type! Terminating...");
+      System.exit(1);
+    }
 
     for(int i = 1; i <= n; i++) {
       scheduleNextArrival(i);
