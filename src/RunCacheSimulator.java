@@ -14,16 +14,16 @@ public class RunCacheSimulator {
     private Measure hitRatioMeasure = new Measure();
     private Measure missRateMeasure = new Measure();
 
-    private int runLength, numObservations, warmUp, m, n;
+    private int runLength, numObservations, warmUpLength, m, n;
     private String cacheType;
 
     public RunCacheSimulator(String cacheType, int m, int n, int runLength,
-            int warmUp, int numObservations) {
+            int warmUpLength, int numObservations) {
         this.cacheType = cacheType;
         this.m = m;
         this.n = n;
         this.runLength = runLength;
-        this.warmUp = warmUp;
+        this.warmUpLength = warmUpLength;
         this.numObservations = numObservations;
     }
 
@@ -55,7 +55,7 @@ public class RunCacheSimulator {
     public void runReplicatedSims() {
         for (int i = 0; i < numObservations; i++) {
             var cacheSimulator = new CacheSimulator(cacheType, runLength,
-                warmUp, m, n);
+                warmUpLength, m, n);
             cacheSimulator.run();
             addToMeasures(cacheSimulator.getHitRatio(), cacheSimulator.getMissRate());
         }

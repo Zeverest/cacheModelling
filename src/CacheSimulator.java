@@ -8,16 +8,18 @@ public class CacheSimulator {
   Cache cache;
 
   private double runLength;
-  private double time;
+
   private int hitCount;
-  private double warmUp;
   private int hit;
 
-  public CacheSimulator(String cacheType, int runLength, int warmUp, int m,
+  private double time;
+  private double warmUpTime;
+
+  public CacheSimulator(String cacheType, int runLength, int warmUpLength,
+      int m,
       int n) {
 
     this.runLength = runLength;
-    this.warmUp = warmUp;
     arrivals = new PriorityQueue<>(n, Comparator.comparingDouble(t -> t.time));
 
     if (cacheType.equals("FIFO")) {
@@ -33,9 +35,11 @@ public class CacheSimulator {
       scheduleNextArrival(i);
     }
 
-    for(int i = 0; i < warmUp; i++) {
+    for(int i = 0; i < warmUpLength; i++) {
       simulateArrival();
     }
+
+    warmUpTime = time;
   }
 
   /**
@@ -53,7 +57,7 @@ public class CacheSimulator {
   }
 
   public double getMissRate() {
-    return (runLength - hitCount) / (time - warmUp);
+    return (runLength - hitCount) / (time - warmUpTime);
   }
 
   public void simulateArrival() {
